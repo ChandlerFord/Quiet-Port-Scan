@@ -34,11 +34,48 @@ ports = range(int(min_port),int(max_port)+1)
 start_timer = datetime.now()
 
 def pinghost(ip):
+    #Verbosity set to 0
+    conf.verb = 0
     try:
-        ping = sr1(IP(dst = ip)/IMCP())
+        #Ping target
+        ping = sr1(IP(dst=ip)/IMCP())
         print 'Host is live!' + '\nStarting Scan...'
     except Exception:
         print 'Could not reach Host'
         sys.exit(1)
+
+#TCP Flag values
+#Connected value
+SYNACK = 0x12
+#Reset value
+RSTACK = 0x14
+
+def portscan(port):
+    sourceport = RandShort()
+    conf.verb = 0
+    SYNACKpkt = srl(IP(dst=target)/TCP(sport=sourceport, dport=port, flags="S"))
+    pktflags = SYNACKpkt.getlayer(TCP).flags
+    #Checks TCP flag value for connection state
+    if pktflags == SYNACK:
+        return True
+    else:
+        return False
+    RSTpkt = IP(dst=target)/TCP(sport=sourceport, dport=port, flags="R")
+    send(RSTpkt)
+
+pinghost(target)
+print 'Scan Started at: ' + strftime("%H:%M:%S:") + '!\n'
+for port in ports:
+    status = portscan(port)
+    if status == True:
+        print 'Port ' + port + ': Open'
+
+stop_timer = datetime.now()
+total_time = stop_timer - start_timer
+print 'Finished Scan!'
+print 'Time Elapsed: ' + str(total_time)
+
+
+
 
 
