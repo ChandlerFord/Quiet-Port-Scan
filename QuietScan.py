@@ -29,3 +29,16 @@ try:
 except KeyboardInterrupt:
     print 'Interrupted by User!'
     sys.exit(1)
+
+ports = range(int(min_port),int(max_port)+1)
+start_timer = datetime.now()
+
+def pinghost(ip):
+    try:
+        ping = sr1(IP(dst = ip)/IMCP())
+        print 'Host is live!' + '\nStarting Scan...'
+    except Exception:
+        print 'Could not reach Host'
+        sys.exit(1)
+
+
