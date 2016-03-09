@@ -11,7 +11,7 @@ except Exception:
     print 'Scapy Not Installed!'
     sys.exit(1)
 
-getLogger("scapy.runtime").setlevel(ERROR)
+getLogger("scapy.runtime").setLevel(ERROR)
 
 try:
     target = raw_input("Target IP: ")
